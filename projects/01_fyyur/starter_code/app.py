@@ -13,6 +13,7 @@ from logging import Formatter, FileHandler
 from flask_wtf import Form
 from forms import *
 from flask_migrate import Migrate
+from sqlalchemy.orm import relationship, backref
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
@@ -41,9 +42,10 @@ class Venue(db.Model):
     phone = db.Column(db.String(120))
     image_link = db.Column(db.String(500))
     facebook_link = db.Column(db.String(120))
-
+    
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
-
+    genres = db.Column(db.ARRAY(db.String))
+    artists = relationship("Artist", secondary="Show")
 
 class Artist(db.Model):
     __tablename__ = 'Artist'
@@ -55,12 +57,21 @@ class Artist(db.Model):
     phone = db.Column(db.String(120))
     genres = db.Column(db.String(120))
     image_link = db.Column(db.String(500))
-    facebook_link = db.Column(db.String(120))
+    facebook_link = db.Column(db.String(120))   
 
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
+    venues = relationship("Venue", secondary="Show")
 
 # TODO Implement Show and Artist models, and complete all model relationships and properties, as a database migration.
 
+class Show(db.Model):
+    __tablename__ = 'Show'
+    id = db.Column(db.Integer, primary_key=True)
+    venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id'))
+    artist_id = db.Column(db.Integer, db.ForeignKey('Artist.id'))
+    start_time = db.Column(db.String)
+    artist = relationship(Artist, backref=backref("Show", cascade="all, delete-orphan"))
+    venue = relationship(Venue, backref=backref("Show", cascade="all, delete-orphan"))
 #----------------------------------------------------------------------------#
 # Filters.
 #----------------------------------------------------------------------------#
@@ -124,32 +135,36 @@ def search_venues():
 def show_venue(venue_id):
   # shows the venue page with the given venue_id
   # TODO: replace with real venue data from the venues table, using venue_id
-
+  upcoming_shows = []
+  past_shows = []
   venue = Venue.query.get(venue_id)
-
+  now = datetime.now()
+  shows = venue.Show
+  
+  #Ref: https://stackoverflow.com/questions/31375873/how-to-filter-a-list-containing-dates-according-to-the-given-start-date-and-end/31376185
+  for show in shows:
+      if datetime.strptime(show.start_time, '%m/%d/%Y %H:%M:%S.%f') >= now:
+        upcoming_shows.append(show)
+      else:
+        past_shows.append(show)
 
   data={
     "id": venue.id,
     "name": venue.name,
-    "genres": ["Jazz", "Reggae", "Swing", "Classical", "Folk"],
-    "address": "1015 Folsom Street",
+    "genres": venue.genres,
+    "address": venue.address,
     "city": venue.city,
     "state": venue.state,
-    "phone": "123-123-1234",
-    "website": "https://www.themusicalhop.com",
-    "facebook_link": "https://www.facebook.com/TheMusicalHop",
+    "phone": venue.phone,
+    #"website": "https://www.themusicalhop.com",
+    "facebook_link": venue.facebook_link,
     "seeking_talent": True,
     "seeking_description": "We are on the lookout for a local artist to play every two weeks. Please call us.",
-    "image_link": "https://images.unsplash.com/photo-1543900694-133f37abaaa5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60",
-    "past_shows": [{
-      "artist_id": 4,
-      "artist_name": "Guns N Petals",
-      "artist_image_link": "https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80",
-      "start_time": "2019-05-21T21:30:00.000Z"
-    }],
-    "upcoming_shows": [],
-    "past_shows_count": 1,
-    "upcoming_shows_count": 0,
+    "image_link": venue.image_link,
+    "past_shows": past_shows,
+    "upcoming_shows": upcoming_shows,
+    "past_shows_count": len(past_shows),
+    "upcoming_shows_count": len(upcoming_shows),
   }
   
  #data = list(filter(lambda d: d['id'] == venue_id, [data1, data2, data3]))[0]
