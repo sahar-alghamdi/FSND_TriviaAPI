@@ -5,13 +5,13 @@
 	<div class="col-sm-6">
 		<h1 class="monospace">
 			{{ venue.name }}
+			<a href="/venues/{{ venue.id }}/edit" class="btn"> Edit </a>
 		</h1>
+		
 		<form action="/venues/delete/{{ venue.id }}" method="post">
 			<input type=hidden value="{{ venue.id }}" name=venue_to_delete />
-			<input type=submit class="btn btn-lg" title="delete" value=&cross; />
+			<input type=submit class="btn" title="delete" value="Delete Venue" />
 		</form>
-		<button title="delete venue" data-id = "venue.id" class="btn btn-lg">&cross;</button>
-		<button title="edit venue" data-id = "venue.id" class="btn btn-primary btn-lg">&checkmark;</button>
 		<p class="subtitle">
 			ID: {{ venue.id }}
 		</p>
