@@ -7,11 +7,7 @@
 			{{ artist.name }}
 			<a href="/artists/{{ artist.id }}/edit" class="btn"> Edit </a>
 		</h1>
-		<form action="/artists/delete/{{ artist.id }}" method="post">
-			<input type=hidden value="{{ artist.id }}" name=artist_to_delete />
-			<input type=submit class="btn" title="delete" value="Delete Artist" />
-		</form>
-
+		
 		<p class="subtitle">
 			ID: {{ artist.id }}
 		</p>
