@@ -104,15 +104,15 @@ def venues():
   #       num_shows should be aggregated based on number of upcoming shows per venue.
 
   # cities = db.session.query(Venue.city.distinct().label("city")) # https://stackoverflow.com/questions/22275412/sqlalchemy-return-all-distinct-column-values/50378867
-  cities = Venue.query.with_entities(Venue.city, Venue.state).distinct() #https://stackoverflow.com/questions/22275412/sqlalchemy-return-all-distinct-column-values/50378867
+  cities = Venue.query.with_entities(Venue.city, Venue.state).distinct().order_by(Venue.city) #https://stackoverflow.com/questions/22275412/sqlalchemy-return-all-distinct-column-values/50378867
 
   data = []
   for city, state in cities:
-    venues = Venue.query.filter_by(city=city)
+    venues = (Venue.query.filter_by(city=city).filter(Venue.state.match(state)))
     data.append({
       "city": city, 
       "state": state,
-      "venues": Venue.query.filter_by(city=city)
+      "venues": venues
     })
   return render_template('pages/venues.html', areas=data)
 
@@ -205,13 +205,15 @@ def create_venue_submission():
     phone = request.form.get('phone')
     genres = request.form.getlist('genres')
     facebook_link = request.form.get('facebook_link')
+    image_link = request.form.get('image_link')
 
     venue = Venue(name=name, 
     city=city, state=state, 
     address=address, 
     phone=phone, 
-    genres=["Jazz", "Reggae", "Swing", "Classical", "Folk"], 
-    facebook_link=facebook_link)
+    genres=genres, 
+    facebook_link=facebook_link,
+    image_link=image_link)
 
     db.session.add(venue)
     db.session.commit()
@@ -232,14 +234,24 @@ def create_venue_submission():
 
   return render_template('pages/home.html')
 
-@app.route('/venues/<venue_id>', methods=['DELETE'])
+#@app.route('/venues/<venue_id>', methods=['DELETE'])
+@app.route('/venues/delete/<venue_id>', methods=['POST'])
 def delete_venue(venue_id):
   # TODO: Complete this endpoint for taking a venue_id, and using
   # SQLAlchemy ORM to delete a record. Handle cases where the session commit could fail.
+  try:
+    Venue.query.filter_by(id=venue_id).delete()
+    db.session.commit()
+  except:
+    db.session.rollback()
+  finally:
+    db.session.close()
+  #venue_to_delete = request.form['venue_to_delete']
+  
 
   # BONUS CHALLENGE: Implement a button to delete a Venue on a Venue Page, have it so that
   # clicking that button delete it from the db then redirect the user to the homepage
-  return None
+  return render_template('pages/home.html')
 
 #  Artists
 #  ----------------------------------------------------------------
