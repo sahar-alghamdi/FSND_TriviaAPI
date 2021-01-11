@@ -212,6 +212,46 @@ def create_app(test_config=None):
   and shown whether they were correct or not. 
   '''
 
+  @app.route('/quizzes', methods=['POST'])
+  def play_quize():
+    body = request.get_json()
+    quiz_category = body.get('quiz_category')
+    previous_questions = body.get('previous_questions')
+
+    if quiz_category['id'] == 0:
+      questions = Question.query.all()
+    else:
+      questions = Question.query.filter_by(category=quiz_category['id']).all()
+
+    # Ref: https://stackoverflow.com/questions/44033894/removing-common-values-from-two-lists-in-python/44033987
+    def execlude_repeated_questions():
+      for q in questions[:]:
+        if q.id in previous_questions:
+            questions.remove(q)
+        
+
+      # for q in local_questions[:]:
+      #   if q in previous_questions:
+      #       local_questions.remove(q)
+      # return local_questions
+    
+    def get_random_question():
+      #return random.choice(list(questions.values()))
+      if (len(questions) != 0):
+        return questions[random.randrange(0, len(questions))].format()
+      else:
+        return None
+      
+      
+    execlude_repeated_questions()
+
+    next_question = get_random_question()
+
+    return jsonify({
+            'success': True,
+            'question': next_question
+    })
+
   '''
   @TODO: 
   Create error handlers for all expected errors 
