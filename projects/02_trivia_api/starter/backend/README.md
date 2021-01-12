@@ -126,7 +126,7 @@ The API will return four error types when requests fail:
 
 - General
     - Returns a list of categories objects, success value, and total number of categories.
-- Sample: curl http://127.0.0.1:5000/categories
+- Sample: ```curl http://127.0.0.1:5000/categories```
 ```
 {
   "categories": {
@@ -252,13 +252,8 @@ The API will return four error types when requests fail:
 
 - General:
     - Creates a new question using the submitted question, answer, category and difficulty. Returns the id of the created question and success value.
-- Sample: curl http://localhost:5000/questions -X POST -H "Content-Type:application/json" -d '{"question":"What is this", "answer":"This is a sample", "category":"1", "difficulty":"1"}'
+- Sample: curl http://127.0.0.1:5000/questions -X POST -H "Content-Type:application/json" -d '{"question":"What is this", "answer":"This is a sample", "category":"1", "difficulty":"1"}'
 ```
-{
-  "deleted_question": 24, 
-  "success": true
-}
-Sahars-MBP:starter sahar$ curl http://localhost:5000/questions -X POST -H "Content-Type:application/json" -d '{"question":"What is this", "answer":"This is a sample", "category":"1", "difficulty":"1"}'
 {
   "question_id": 42, 
   "success": true
@@ -269,7 +264,7 @@ Sahars-MBP:starter sahar$ curl http://localhost:5000/questions -X POST -H "Conte
 
 - General:
     - Returns a list of question objects, success value, total number of questions, and current category.
-- Sample: curl http://localhost:5000/questions/search -X POST -H "Content-Type:application/json" -d '{"searchTerm":"Hematology"}'
+- Sample: curl http://127.0.0.1:5000/questions/search -X POST -H "Content-Type:application/json" -d '{"searchTerm":"Hematology"}'
 ```
 {
   "current_category": null, 
@@ -321,7 +316,7 @@ Sahars-MBP:starter sahar$ curl http://localhost:5000/questions -X POST -H "Conte
 - General:
     - Returns a random question within the given category, 
   if provided, and that is not one of the previous questions.
-- Sample: curl http://localhost:5000/quizzes -X POST -H "Content-Type:application/json" -d '{"quiz_category":{"id":5}, "previous_questions": [2]}'
+- Sample: curl http://127.0.0.1:5000/quizzes -X POST -H "Content-Type:application/json" -d '{"quiz_category":{"id":5}, "previous_questions": [2]}'
 ```
 {
   "question": {
