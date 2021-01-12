@@ -78,6 +78,7 @@ def create_app(test_config=None):
     categories = Category.query.order_by(Category.id).all()
     formatted_categories = {category.id : category.type for category in categories}
 
+    # if there is no questions in the provided page
     if len(current_questions) == 0:
         abort(404)
 
@@ -102,6 +103,7 @@ def create_app(test_config=None):
     try:
       question = Question.query.get(question_id)
 
+      # if the question does not exist
       if question is None:
         abort(404)
 
@@ -134,6 +136,7 @@ def create_app(test_config=None):
     new_category = body.get('category', None)
     new_difficulty = body.get('difficulty', None)
 
+    # if one or more of the inputs in the new question form is empty
     if ((new_question is None) or (new_answer is None)
       or (new_difficulty is None) or (new_category is None)):
       abort(422)
@@ -169,6 +172,8 @@ def create_app(test_config=None):
     search_term = body.get('searchTerm')
     selection = Question.query.filter(Question.question.ilike('%'+search_term+'%'))
     formatted_questions = [question.format() for question in selection]
+    
+    # if there is no questions match the search term
     if len(formatted_questions) == 0:
         abort(404)
 
@@ -196,6 +201,8 @@ def create_app(test_config=None):
 
     formatted_questions = [question.format() for question in questions_by_category]
     
+    # If there the category is invalid or if there are no questions 
+    # under provided category
     if len(formatted_questions) == 0:
       abort(404)
 
@@ -233,12 +240,17 @@ def create_app(test_config=None):
     else:
       questions = Question.query.filter_by(category=quiz_category['id']).all()
 
-    # Ref: https://stackoverflow.com/questions/44033894/removing-common-values-from-two-lists-in-python/44033987
+    # This function finds the common questions in both [questions] list 
+    # and [previous questions] list and then removes them from [questions] list
     def execlude_repeated_questions():
       for q in questions[:]:
         if q.id in previous_questions:
             questions.remove(q)
     
+    # This function generates random number between 0 (included) 
+    # and the length of [questions] list
+    # Returns random question from [questions] list 
+    # Returns None when there are no more not used questions in the provided category
     def get_random_question():
       if (len(questions) != 0):
         return questions[random.randrange(0, len(questions))].format()
