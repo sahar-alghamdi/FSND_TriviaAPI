@@ -134,8 +134,13 @@ def create_app(test_config=None):
     new_category = body.get('category', None)
     new_difficulty = body.get('difficulty', None)
 
+    if ((new_question is None) or (new_answer is None)
+      or (new_difficulty is None) or (new_category is None)):
+      abort(422)
+
     try:
-      question = Question(question=new_question, answer=new_answer, category=new_category, difficulty=new_difficulty)
+      question = Question(question=new_question, answer=new_answer, 
+        category=new_category, difficulty=new_difficulty)
       question.insert()
 
       return jsonify({
@@ -168,6 +173,7 @@ def create_app(test_config=None):
         abort(404)
 
     return jsonify({
+        'success': True,
         'questions': formatted_questions,
         'total_questions': len(formatted_questions),
         'current_category': None
@@ -194,6 +200,7 @@ def create_app(test_config=None):
       abort(404)
 
     return jsonify({
+      'success': True,
       'questions': formatted_questions,
       'total_questions': len(formatted_questions),
       'current_category': category_id
@@ -218,6 +225,9 @@ def create_app(test_config=None):
     quiz_category = body.get('quiz_category')
     previous_questions = body.get('previous_questions')
 
+    if (quiz_category is None) or (previous_questions is None):
+      abort(422)
+
     if quiz_category['id'] == 0:
       questions = Question.query.all()
     else:
@@ -228,20 +238,12 @@ def create_app(test_config=None):
       for q in questions[:]:
         if q.id in previous_questions:
             questions.remove(q)
-        
-
-      # for q in local_questions[:]:
-      #   if q in previous_questions:
-      #       local_questions.remove(q)
-      # return local_questions
     
     def get_random_question():
-      #return random.choice(list(questions.values()))
       if (len(questions) != 0):
         return questions[random.randrange(0, len(questions))].format()
       else:
         return None
-      
       
     execlude_repeated_questions()
 
@@ -258,6 +260,22 @@ def create_app(test_config=None):
   including 404 and 422. 
   '''
   
+  @app.errorhandler(404)
+  def not_found(error):
+    return jsonify({
+      "success": False, 
+      "error": 404,
+      "message": "resource not found"
+    }), 404
+
+  @app.errorhandler(422)
+  def unprocessable(error):
+    return jsonify({
+      "success": False, 
+      "error": 422,
+      "message": "unprocessable"
+    }), 422
+
   return app
 
     
