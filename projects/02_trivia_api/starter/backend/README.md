@@ -122,10 +122,10 @@ The API will return four error types when requests fail:
 
 ### Endpoints
 
-Get /categories
+#### Get /categories
 
 - General
-    - Returns a list of categories objects, success value, and total number of categories
+    - Returns a list of categories objects, success value, and total number of categories.
 - Sample: curl http://127.0.0.1:5000/categories
 ```
 {
@@ -142,7 +142,7 @@ Get /categories
 }
 ```
 
-Get /questions
+#### Get /questions
 
 - General
     - Returns a list of questions objects, success value, number of total questions, current category, categories.
@@ -236,11 +236,11 @@ Get /questions
 }
 ```
 
-DELETE /questions/{question_id}
+#### DELETE /questions/{question_id}
 
 - General:
     - Deletes the question of the given ID if it exists. Returns the id of the deleted question and success value.
-- curl -X DELETE http://127.0.0.1:5000/questions/24
+- Sample: curl -X DELETE http://127.0.0.1:5000/questions/24
 ```
 {
   "deleted_question": 24, 
@@ -248,11 +248,11 @@ DELETE /questions/{question_id}
 }
 ```
 
-POST /questions
+#### POST /questions
 
 - General:
     - Creates a new question using the submitted question, answer, category and difficulty. Returns the id of the created question and success value.
-- curl http://localhost:5000/questions -X POST -H "Content-Type:application/json" -d '{"question":"What is this", "answer":"This is a sample", "category":"1", "difficulty":"1"}'
+- Sample: curl http://localhost:5000/questions -X POST -H "Content-Type:application/json" -d '{"question":"What is this", "answer":"This is a sample", "category":"1", "difficulty":"1"}'
 ```
 {
   "deleted_question": 24, 
@@ -265,7 +265,7 @@ Sahars-MBP:starter sahar$ curl http://localhost:5000/questions -X POST -H "Conte
 }
 ```
 
-Post /questions/search
+#### Post /questions/search
 
 - General:
     - Returns a list of question objects, success value, total number of questions, and current category.
@@ -287,7 +287,7 @@ Post /questions/search
 }
 ```
 
-Get /categories/{category_id}/questions
+#### Get /categories/{category_id}/questions
 
 - General:
     - Returns a list of question objects of provided category id, success value, total number of questions, and current category.
@@ -316,7 +316,7 @@ Get /categories/{category_id}/questions
 }
 ```
 
-Post /quizzes
+#### Post /quizzes
 
 - General:
     - Returns a random question within the given category, 
