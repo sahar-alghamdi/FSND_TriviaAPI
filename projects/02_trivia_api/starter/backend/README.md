@@ -147,7 +147,7 @@ The API will return four error types when requests fail:
 - General
     - Returns a list of questions objects, success value, number of total questions, current category, categories.
     - Results are paginated in groups of 10. Include a request argument to choose page number, starting from 1.
-- Sample: curl http://127.0.0.1:5000/questions
+- Sample: ```curl http://127.0.0.1:5000/questions```
 ```
 {
   "categories": {
@@ -240,7 +240,7 @@ The API will return four error types when requests fail:
 
 - General:
     - Deletes the question of the given ID if it exists. Returns the id of the deleted question and success value.
-- Sample: curl -X DELETE http://127.0.0.1:5000/questions/24
+- Sample: ```curl -X DELETE http://127.0.0.1:5000/questions/24```
 ```
 {
   "deleted_question": 24, 
@@ -252,7 +252,7 @@ The API will return four error types when requests fail:
 
 - General:
     - Creates a new question using the submitted question, answer, category and difficulty. Returns the id of the created question and success value.
-- Sample: curl http://127.0.0.1:5000/questions -X POST -H "Content-Type:application/json" -d '{"question":"What is this", "answer":"This is a sample", "category":"1", "difficulty":"1"}'
+- Sample: ```curl http://127.0.0.1:5000/questions -X POST -H "Content-Type:application/json" -d '{"question":"What is this", "answer":"This is a sample", "category":"1", "difficulty":"1"}'```
 ```
 {
   "question_id": 42, 
@@ -264,7 +264,7 @@ The API will return four error types when requests fail:
 
 - General:
     - Returns a list of question objects, success value, total number of questions, and current category.
-- Sample: curl http://127.0.0.1:5000/questions/search -X POST -H "Content-Type:application/json" -d '{"searchTerm":"Hematology"}'
+- Sample: ```curl http://127.0.0.1:5000/questions/search -X POST -H "Content-Type:application/json" -d '{"searchTerm":"Hematology"}'```
 ```
 {
   "current_category": null, 
@@ -286,7 +286,7 @@ The API will return four error types when requests fail:
 
 - General:
     - Returns a list of question objects of provided category id, success value, total number of questions, and current category.
-- Sample: curl http://127.0.0.1:5000/categories/6/questions
+- Sample: ```curl http://127.0.0.1:5000/categories/6/questions```
 ```
 {
 "current_category": "6", 
@@ -316,7 +316,7 @@ The API will return four error types when requests fail:
 - General:
     - Returns a random question within the given category, 
   if provided, and that is not one of the previous questions.
-- Sample: curl http://127.0.0.1:5000/quizzes -X POST -H "Content-Type:application/json" -d '{"quiz_category":{"id":5}, "previous_questions": [2]}'
+- Sample: ```curl http://127.0.0.1:5000/quizzes -X POST -H "Content-Type:application/json" -d '{"quiz_category":{"id":5}, "previous_questions": [2]}'```
 ```
 {
   "question": {
